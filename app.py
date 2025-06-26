@@ -13,8 +13,6 @@ from mistralai.client import MistralClient
 from mistralai import Mistral
 
 
-@st.cache_resource
-
 hf_token = st.secrets["HF_TOKEN"]
 ms_token = st.secrets["MS_TOKEN"]
 client = Mistral(api_key=ms_token)
