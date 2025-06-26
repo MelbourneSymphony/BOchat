@@ -15,8 +15,8 @@ from mistralai import Mistral
 
 @st.cache_resource
 
-hf_token = os.environ.get("HF_TOKEN")
-ms_token = os.environ.get("MS_TOKEN")
+hf_token = st.secrets["HF_TOKEN"]
+ms_token = st.secrets["MS_TOKEN"]
 client = Mistral(api_key=ms_token)
 PROMPT = """
 An excerpt from a document is given below.
