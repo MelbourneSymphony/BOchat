@@ -138,7 +138,7 @@ def reply(query: str, index: IndexFlatL2, chunks):
     embedding = embed(query)
     embedding = np.array([embedding])
 
-    _, indexes = index.search(embedding, k=2)
+    indexes = index.search(embedding, k=2)
     context = [chunks[i] for i in indexes.tolist()[0]]
 
     user_message = prompt.format(context=context, query=query)
