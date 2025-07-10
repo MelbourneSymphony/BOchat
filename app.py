@@ -84,7 +84,7 @@ def embed(text):
 def build_and_cache_index():
     """Builds and caches the index from documents in the specified directory."""
     all_combined_texts = []
-    data_folder = Path("Data")
+    data_folder = Path("data")
 
     # Ensure the 'Data' folder exists
     if not data_folder.exists() or not data_folder.is_dir():
@@ -155,6 +155,10 @@ def main():
         st.session_state.messages = []
 
     index, chunks = build_and_cache_index()
+
+    if index is None or chunks is None:
+        st.error("Failed to build the document index. Please check that the 'data' folder exists and contains valid CSV files.")
+        return
 
     for message in st.session_state.messages:
         with st.chat_message(message["agent"]):
