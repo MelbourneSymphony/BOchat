@@ -16,7 +16,7 @@ from mistralai import Mistral
 hf_token = st.secrets["HF_TOKEN"]
 ms_token = st.secrets["MS_TOKEN"]
 client = Mistral(api_key=ms_token)
-PROMPT = """
+prompt = """
 An excerpt from a document is given below.
 
 ---------------------
@@ -24,7 +24,7 @@ An excerpt from a document is given below.
 ---------------------
 
 Given the document excerpt, answer the following query.
-If the context does not provide enough information, decline to answer.
+If the con does not provide enough information, decline to answer.
 Do not output anything that can't be answered from the context.
 
 Query: {query}
@@ -123,7 +123,7 @@ def build_and_cache_index():
     full_text = "\n".join(all_combined_texts)
 
     chunk_size = 500
-    chunks = [text[i : i + chunk_size] for i in range(0, len(text), chunk_size)]
+    chunks = [full_text[i : i + chunk_size] for i in range(0, len(full_text), chunk_size)]
 
     embeddings = np.array([embed(chunk) for chunk in chunks])
     dimension = embeddings.shape[1]
