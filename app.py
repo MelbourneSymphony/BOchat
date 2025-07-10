@@ -24,7 +24,7 @@ An excerpt from a document is given below.
 ---------------------
 
 Given the document excerpt, answer the following query.
-If the context does not provide enough information, decline to answer.
+If the con does not provide enough information, decline to answer.
 Do not output anything that can't be answered from the context.
 
 Query: {query}
