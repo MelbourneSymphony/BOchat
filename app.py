@@ -171,7 +171,8 @@ def main():
 
     if query:
         add_message(query, agent="human", stream=False, store=True)
-        reply(query, index, chunks)
+        response = reply(query, index, chunks)
+        add_message(response, agent="ai", stream=True, store=True)
 
 
 if __name__ == "__main__":
