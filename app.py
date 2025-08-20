@@ -90,8 +90,8 @@ def build_and_cache_index():
     from pathlib import Path
 
     embeddings_folder = Path("embeddings")
-    chunks_path = embeddings / "chunks.npy"
-    embeddings_path = embeddings / "embeddings.npy"
+    chunks_path = embeddings_folder / "chunks.npy"
+    embeddings_path = embeddings_folder / "embeddings.npy"
 
     # Try to load embeddings and chunks from disk
     if embeddings_folder.exists() and chunks_path.exists() and embeddings_path.exists():
