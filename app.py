@@ -17,14 +17,17 @@ hf_token = st.secrets["HF_TOKEN"]
 ms_token = st.secrets["MS_TOKEN"]
 client = Mistral(api_key=ms_token)
 prompt = """
-An excerpt from a document is given below.
+You are a helpful assistant that answers questions about from symphony orchestra box office attandants.
+You are designed to assist with queries related to the box office, ticketing, and customer service information and policies.
+An excerpt from the the box office manual is given below.
+
 
 ---------------------
 {context}
 ---------------------
 
 Given the document excerpt, answer the following query.
-If the context does not provide enough information, decline to answer and direct the user to ask a Team Leader or a Manager.
+If the context does not provide enough information, decline to answer and direct the user to ask a Team Leader or a Supervisor.
 Do not output anything that can't be answered from the context.
 
 Query: {query}
@@ -79,58 +82,28 @@ def embed(text):
     return output
 
 
-# Function to build and cache the index from PDFs in a directory
+# Function to call embeddings and build the index
 @st.cache_resource
 def build_and_cache_index():
-    """Builds and caches the index from documents in the specified directory."""
-    all_combined_texts = []
-    data_folder = Path("data")
+    """Loads the index and chunks from the embeddings folder. If not found, throws an error and does not build."""
+    import numpy as np
+    from pathlib import Path
 
-    # Ensure the 'Data' folder exists
-    if not data_folder.exists() or not data_folder.is_dir():
-        print(f"Error: The folder '{data_folder}' does not exist or is not a directory.")
+    embeddings_folder = Path("embeddings")
+    chunks_path = embeddings / "chunks.npy"
+    embeddings_path = embeddings / "embeddings.npy"
+
+    # Try to load embeddings and chunks from disk
+    if embeddings_folder.exists() and chunks_path.exists() and embeddings_path.exists():
+        chunks = np.load(chunks_path, allow_pickle=True).tolist()
+        embeddings = np.load(embeddings_path)
+        dimension = embeddings.shape[1]
+        index = IndexFlatL2(dimension)
+        index.add(embeddings)
+        return index, chunks
+    else:
+        print("Error: Embeddings not found in 'embeddings' folder. Please generate them before running the app.")
         return None, None
-
-    csv_files = list(data_folder.glob("*.csv"))
-
-    if not csv_files:
-        print(f"No CSV files found in '{data_folder}'.")
-        return None, None
-
-    for csv_file_path in csv_files:
-        print(f"Processing {csv_file_path.name}...")
-        try:
-            df = pd.read_csv(csv_file_path)
-
-            # Assuming these columns *will* be present and correctly formatted
-            df["combined"] = (
-                "Title: " + df['Section/Column'].astype(str).str.strip() + " " +
-                df['Name'].astype(str).str.strip() + "; Content: " +
-                df['Notes'].astype(str).str.strip()
-            )
-            all_combined_texts.extend(df["combined"].tolist())
-
-        except Exception as e:
-            print(f"An error occurred while processing '{csv_file_path.name}': {e}")
-            # Decide whether to skip this file or stop entirely
-            continue # Skip to the next file if an error occurs
-
-    if not all_combined_texts:
-        print("No combined text could be extracted from any CSV file.")
-        return None, None
-
-    # Join all extracted combined texts into one large string for chunking
-    full_text = "\n".join(all_combined_texts)
-
-    chunk_size = 500
-    chunks = [full_text[i : i + chunk_size] for i in range(0, len(full_text), chunk_size)]
-
-    embeddings = np.array([embed(chunk) for chunk in chunks])
-    dimension = embeddings.shape[1]
-    index = IndexFlatL2(dimension)
-    index.add(embeddings)
-
-    return index, chunks
 
 
 # Function to reply to queries using the built index
