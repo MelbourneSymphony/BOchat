@@ -134,13 +134,13 @@ def main():
         return
 
     for message in st.session_state.messages:
-        with st.chat_message(message["agent"]):
+        with st.chat_message(message["agent"], icon="material/support_agent"):
             st.write(message["content"])
 
-    query = st.chat_input("Ask something about your PDF")
+    query = st.chat_input("Ask me anything.")
 
     if not st.session_state.messages:
-        add_message("Ask me anything!")
+        add_message("How can I assist you with box office operations today?")
 
     if query:
         add_message(query, agent="human", stream=False, store=True)
