@@ -134,7 +134,7 @@ def main():
         return
 
     for message in st.session_state.messages:
-        with st.chat_message(message["agent"], avatar="material/support_agent"):
+        with st.chat_message(message["agent"]):
             st.write(message["content"])
 
     query = st.chat_input("Ask me anything.")
