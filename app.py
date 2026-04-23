@@ -9,7 +9,7 @@ import faiss
 import csv
 from huggingface_hub import InferenceClient
 from faiss import IndexFlatL2
-from mistralai.client import MistralClient
+#from mistralai.client import MistralClient
 from mistralai import Mistral
 
 
