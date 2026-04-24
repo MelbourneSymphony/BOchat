@@ -20,10 +20,9 @@ manual_context = load_full_manual()
 # 3. Simple Reply Function (No Chunks!)
 def reply(query: str):
     # We put the manual directly into the system instructions
-    sys_instruct = ("You are an expert Symphony Orchestra Box Office Assistant. "
-        "Below is the complete operations manual. Use it to provide detailed, "
-        "step-by-step instructions. If the manual doesn't mention something, "
-        "politely say you don't know and suggest asking a Team Leader or supervisor.\n\n"
+    sys_instruct = ("You are an expert Symphony Orchestra Box Office Assistant.Below is the complete operations manual. "
+                "Use it to provide detailed,step-by-step instructions. If the manual doesn't mention something, "
+        "politely say you don't know and suggest asking a Team Leader or supervisor. Do Not use any information listed outside the provided context in your response\n\n"
         f"--- MANUAL START ---\n{manual_context}\n--- MANUAL END ---")
     
     for attempt in range(3):
