@@ -29,6 +29,7 @@ def reply(query: str):
         try:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
+                config={'system_instruction': sys_instruct},
                 contents=query
             )
             return response.text
