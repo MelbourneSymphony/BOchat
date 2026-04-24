@@ -27,7 +27,7 @@ def reply(query: str):
     for attempt in range(3):
         try:
             response = client.models.generate_content(
-                model="gemini-1.5-flash",
+                model="gemini-2.5-flash",
                 config={'system_instruction': sys_instruct},
                 contents=query
             )
