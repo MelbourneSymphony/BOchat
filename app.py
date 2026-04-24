@@ -120,15 +120,10 @@ def reply(query: str, index, chunks):
     formatted_prompt = prompt.format(context=context, query=query)
 
     # Call Gemini 3
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=formatted_prompt
-    )
-    
     for attempt in range(3):
         try:
             response = client.models.generate_content(
-                model="gemini-3-flash-preview",
+                model="gemini-2.5-flash",
                 contents=formatted_prompt
             )
             return response.text
