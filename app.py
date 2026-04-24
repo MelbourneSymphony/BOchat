@@ -12,7 +12,7 @@ client = genai.Client(api_key=gemini_token)
 @st.cache_data
 def load_full_manual():
     # Assuming your manual is a text file or CSV
-    with open("data/orchestra_manual.txt", "r") as f:
+    with open("data/Box Office Manual (2025) - working.txt", "r") as f:
         return f.read()
 
 manual_context = load_full_manual()
