@@ -111,7 +111,7 @@ def reply(query: str, index, chunks):
     # RAG Logic: Get the context
     embedding = embed(query)
     embedding = np.array([embedding])
-    _, indices = index.search(embedding, k=3) # Increased k for Gemini's larger capacity
+    _, indices = index.search(embedding, k=10) # Increased k for Gemini's larger capacity
     context = [chunks[i] for i in indices[0]]
 
     # Format the prompt
