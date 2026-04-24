@@ -39,10 +39,35 @@ def reply(query: str):
                 continue
             else:
                 return "The server is a bit busy right now. Please try your question again in a moment!"
+#Streamlit UI settings
+st.title("BObot")
 
-# 4. Streamlit UI
-query = st.chat_input("How can I assist you with box office operations today?")
-if query:
-    st.chat_message("user").write(query)
-    answer = reply(query)
-    st.chat_message("ai").write(answer)
+# Initialize chat history with a welcome message
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "How can I assist you with Box Office operations today?"}
+    ]
+
+# Display existing chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.write(message["content"])
+
+# User Input
+if query := st.chat_input("Ask about ticket exchanges, refunds, or seating..."):
+    # Display user message
+    with st.chat_message("user"):
+        st.write(query)
+    st.session_state.messages.append({"role": "user", "content": query})
+
+    # Display assistant response with a spinner
+    with st.chat_message("assistant"):
+        with st.spinner("Checking the manual..."):
+            try:
+                answer = reply(query)
+                # Escape $ to avoid LaTeX issues in Streamlit
+                answer = answer.replace("$", "\$")
+                st.write(answer)
+                st.session_state.messages.append({"role": "assistant", "content": answer})
+            except Exception as e:
+                st.error(f"Server is busy or an error occurred: {e}")
