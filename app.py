@@ -10,12 +10,13 @@ import csv
 from huggingface_hub import InferenceClient
 from faiss import IndexFlatL2
 #from mistralai.client import MistralClient
-from mistralai import Mistral
+import mistralai
+st.write(f"Mistral version: {mistralai.__version__}")
 
 
 hf_token = st.secrets["HF_TOKEN"]
 ms_token = st.secrets["MS_TOKEN"]
-client = Mistral(api_key=ms_token)
+client = mistralai.Mistral(api_key=ms_token)
 prompt = """
 You are a helpful assistant that answers questions about from symphony orchestra box office attandants.
 You are designed to assist with queries related to the box office, ticketing, and customer service information and policies.
