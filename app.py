@@ -9,14 +9,13 @@ import faiss
 import csv
 from huggingface_hub import InferenceClient
 from faiss import IndexFlatL2
-#from mistralai.client import MistralClient
-from mistralai import Mistral
-st.write(f"Mistral version: {Mistral.__version__}")
+from google import genai
+
 
 
 hf_token = st.secrets["HF_TOKEN"]
-ms_token = st.secrets["MS_TOKEN"]
-client = Mistral(api_key=ms_token)
+gemini_token = st.secrets["GEMINI_API_KEY"]
+client = genai.Client(api_key=gemini_token)
 prompt = """
 You are a helpful assistant that answers questions about from symphony orchestra box office attandants.
 You are designed to assist with queries related to the box office, ticketing, and customer service information and policies.
@@ -108,18 +107,23 @@ def build_and_cache_index():
 
 
 # Function to reply to queries using the built index
-def reply(query: str, index: IndexFlatL2, chunks):
+def reply(query: str, index, chunks):
+    # RAG Logic: Get the context
     embedding = embed(query)
     embedding = np.array([embedding])
-
-    _, indices = index.search(embedding, k=2)
+    _, indices = index.search(embedding, k=3) # Increased k for Gemini's larger capacity
     context = [chunks[i] for i in indices[0]]
 
-    user_message = prompt.format(context=context, query=query)
+    # Format the prompt
+    formatted_prompt = prompt.format(context=context, query=query)
 
-    messages = [{"role":"user", "content":user_message}]
-    chat_response = client.chat.complete(model="mistral-medium", messages=messages)
-    return chat_response.choices[0].message.content
+    # Call Gemini 3
+    response = client.models.generate_content(
+        model="gemini-3-flash-preview",
+        contents=formatted_prompt
+    )
+    
+    return response.text
 
 
 # Main application logic
