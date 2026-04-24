@@ -8,18 +8,17 @@ import os
 gemini_token = st.secrets["GEMINI_API_KEY"]
 client = genai.Client(api_key=gemini_token)
 
-# 2. Load the entire manual once
+# 2. Load the entire manual
 @st.cache_data
 def load_full_manual():
-    # Assuming your manual is a text file or CSV
     with open("data/Box Office Manual (2025) - working.txt", "r",encoding="utf-8-sig", errors="ignore") as f:
         return f.read()
 
 manual_context = load_full_manual()
 
-# 3. Simple Reply Function (No Chunks!)
+# 3. Reply Function
 def reply(query: str):
-    # We put the manual directly into the system instructions
+    #manual directly into the system instructions
     sys_instruct = ("You are an expert Symphony Orchestra Box Office Assistant.Below is the complete operations manual. "
                 "Use it to provide detailed,step-by-step instructions. If the manual doesn't mention something, "
         "politely say you don't know and suggest asking a Team Leader or supervisor. Do Not use any information listed outside the provided context in your response\n\n"
@@ -28,7 +27,7 @@ def reply(query: str):
     for attempt in range(3):
         try:
             response = client.models.generate_content(
-                model="gemini-2.5-flash",
+                model="gemini-1.5-flash",
                 config={'system_instruction': sys_instruct},
                 contents=query
             )
