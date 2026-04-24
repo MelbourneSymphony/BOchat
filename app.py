@@ -12,7 +12,7 @@ client = genai.Client(api_key=gemini_token)
 @st.cache_data
 def load_full_manual():
     # Assuming your manual is a text file or CSV
-    with open("data/Box Office Manual (2025) - working.txt", "r") as f:
+    with open("data/Box Office Manual (2025) - working.txt", "r",encoding="utf-8-sig", errors="ignore") as f:
         return f.read()
 
 manual_context = load_full_manual()
@@ -20,13 +20,17 @@ manual_context = load_full_manual()
 # 3. Simple Reply Function (No Chunks!)
 def reply(query: str):
     # We put the manual directly into the system instructions
-    sys_instruct = f"You are a helpful Box Office Assistant. Use this manual to answer: \n\n {manual_context}"
+    sys_instruct = ("You are an expert Symphony Orchestra Box Office Assistant. "
+        "Below is the complete operations manual. Use it to provide detailed, "
+        "step-by-step instructions. If the manual doesn't mention something, "
+        "politely say you don't know and suggest asking a Team Leader or supervisor.\n\n"
+        f"--- MANUAL START ---\n{manual_context}\n--- MANUAL END ---")
     
     for attempt in range(3):
         try:
             response = client.models.generate_content(
                 model="gemini-2.5-flash",
-                contents=formatted_prompt
+                contents=query
             )
             return response.text
         except exceptions.ServiceUnavailable:
