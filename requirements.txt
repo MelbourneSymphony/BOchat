@@ -3,4 +3,4 @@ pandas
 streamlit
 faiss-cpu
 huggingface_hub
-mistralai
+mistralai>=1.0.0
