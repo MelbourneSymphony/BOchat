@@ -10,6 +10,8 @@ import csv
 from huggingface_hub import InferenceClient
 from faiss import IndexFlatL2
 from google import genai
+import time
+from google.api_core import exceptions
 
 
 
@@ -123,7 +125,19 @@ def reply(query: str, index, chunks):
         contents=formatted_prompt
     )
     
-    return response.text
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model="gemini-3-flash-preview",
+                contents=formatted_prompt
+            )
+            return response.text
+        except exceptions.ServiceUnavailable:
+            if attempt < 2:
+                time.sleep(2)  # Wait 2 seconds before trying again
+                continue
+            else:
+                return "The server is a bit busy right now. Please try your question again in a moment!"
 
 
 # Main application logic
