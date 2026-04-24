@@ -119,7 +119,7 @@ def reply(query: str, index, chunks):
 
     # Call Gemini 3
     response = client.models.generate_content(
-        model="ggemini-2.5-flash",
+        model="gemini-2.5-flash",
         contents=formatted_prompt
     )
     
