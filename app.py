@@ -1,4 +1,5 @@
 import streamlit as st
+from pathlib import Path
 from google import genai
 import time
 from google.api_core import exceptions
@@ -11,8 +12,18 @@ client = genai.Client(api_key=gemini_token)
 # 2. Load the entire manual
 @st.cache_data
 def load_full_manual():
-    with open("data/Box Office Manual (2025) - working.txt", "r",encoding="utf-8-sig", errors="ignore") as f:
-        return f.read()
+    # Define the path to your data folder
+    data_dir = Path("data")
+    all_text = []
+
+    # Iterate through all files in the directory
+    # glob("*.txt") ensures we only grab text files
+    for file_path in data_dir.glob("*.txt"):
+        with open(file_path, "r", encoding="utf-8-sig", errors="ignore") as f:
+            all_text.append(f.read())
+
+    # Join all file contents with a newline separator
+    return "\n\n".join(all_text)
 
 manual_context = load_full_manual()
 
